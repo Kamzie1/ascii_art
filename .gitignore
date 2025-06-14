@@ -1,0 +1,6 @@
+/.venv
+.git
+venv
+*.jpeg
+*.png
+*.jpg
