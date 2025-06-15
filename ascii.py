@@ -4,11 +4,105 @@ from PIL import Image
 from docx import Document
 
 # 10 levels of gray
-gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
+# the best: 4, 11, 6, 13, 14, 2, 10
+gscale0 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
 
-gscale12 = "$@%#*0_+=-:`'. "
+gscale1 = "$@B%8&WM*oakbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~><i!lI;:,\"^`'. "
 
-gscale2 = "@%#*+=-:. "
+gscale2 = "MW&8#%xo*=+~:-. "
+
+gscale3 = "%&#oakbdqpmwZO0QJUYXzcvnxvt/|)(][}{?1Iil!*+=~-;:,'`. "
+
+gscale4 = "MW&@$%#*+=-:. "
+
+gscale5 = "MWoakbdqpmwZOQLCJUYXzcvnuxrjft!li;:,.'` "
+
+gscale6 = "@%#*+=-:. "
+
+gscale7 = "@#%WM&$*=+~^-/;:,. "
+
+gscale8 = "@#%WM&$B*=+/~^:;,. "
+
+gscale9 = "@#%WM&$=*+~-^:/;,.'` "
+
+gscale10 = "@#%WM&$*+=~^:-., "
+
+gscale11 = "@#%WM&$B8*oa+=~^:;-,. "
+
+gscale12 = "@#MW&%$B8o*a+=~^:;-,. "
+
+gscale13 = "@#&*=+-:. "
+
+gscale14 = "█▓▒░:. "
+
+gscale15 = "@WM$*o+=-:. "
+
+gscale16 = "█@▓W&%MØ$ΦΔ8o╬╣xo=/~:;,'`. "
+
+gscale17 = "@#WɅÆ&%╬$BM8oah*=+~:;,.` "
+
+gscale18 = "█▒░▓█▒░▓▓▒░██░▒▒/\\/\\/\\\\/=~^^-:. "
+
+gscale19 = "ΩΣ@#&%∞≡≠≃≈∴πλ+=~–:,'`. "
+
+gscale20 = "█◉⨀✷✧⟁⟁⨂⨁⊚⚛*⋆∘·˚˖,˙. "
+
+gscale21 = "█▓▒░╬╩╦═╚╝╔╗╠╣═╬++--::.. "
+
+gscale22 = "█⯈⯊⨀◉✷☢⟁⨂⊚☯⚛⦿∘⋆·˚˖,˙. "
+
+gscale23 = "█⨸☠⩚⯈⚿⟁⨃⩰⚛⩪⋆˚᯽᯾᯿´'˙. "
+
+gscale24 = "⬛█⯈⨀◉✶✧✷⟁⨂⊚⚛⦿∘⋆·˚˖,˙.⬜"
+
+gscale25 = "█⯈⯊⨀⨸☠⚿◉✷✶☢☯⟁⨃⨂⊚⚛⦿⩚⩰⩪∘⋆·˚᯽᯾᯿´'˙.,.⠀ "
+
+gscale26 = "█⨀⨸Φ⟁Ϟ⧫⩚⚿ℵ⩰⚛∞⦿∴∘⋆·˚˖,˙.⠀"
+
+gscale27 = "█☠☢⛧⨸⚿⊗⨂⚛⟁᯾∴⋆⋇⌖·˖,˙.⠀"
+
+gscale28 = "⣿⡿⣾⣽⣻⢿⢾⢽⣷⣯⣟⣠⡄⡀⠄⠂⠁⠀"
+
+gscale29 = "█⟁⧖⧗⧚☍⚛⟊⟐⩰∷⋆·⠂⠁⠀"
+
+gscale30 = "█⨀𓂀⚱⚛⚿⟁⧫⦿⌖⋆·˚˖,˙.⠀"
+
+gscale31 = "█▓⣿⯈⨸☠⚿⛧⚛⛩⩚⧫∑♒♾☯⚰⛓✠⌖∷∘⋆˚᯾᯿,˙.⠀"
+
+greyscales = [
+    gscale0,
+    gscale1,
+    gscale2,
+    gscale3,
+    gscale4,
+    gscale5,
+    gscale6,
+    gscale7,
+    gscale8,
+    gscale9,
+    gscale10,
+    gscale11,
+    gscale12,
+    gscale13,
+    gscale14,
+    gscale15,
+    gscale16,
+    gscale17,
+    gscale18,
+    gscale19,
+    gscale20,
+    gscale21,
+    gscale22,
+    gscale23,
+    gscale24,
+    gscale25,
+    gscale26,
+    gscale27,
+    gscale28,
+    gscale29,
+    gscale30,
+    gscale31,  # Singularity Core
+]
 
 from docx import Document
 from docx.shared import Pt, Inches, Emu
@@ -75,17 +169,22 @@ def average(hist):
     return suma / division
 
 
-def generate_new_image(img, cols, gscale):
+def generate_new_image(img, cols, gscale, x):
     image = Image.open(img).convert("L")
     width = image.size[0]
     height = image.size[1]
 
-    if width < cols:
+    if width < cols and x < 1:
         raise ValueError("to small picture")
 
-    sub = 1.7
+    if x != 0:
+        scale = x
+        cols = int(width / scale)
+    else:
+        scale = int(width / cols)
 
-    scale = int(width / cols)
+    sub = 2
+
     rows = int(height / scale / sub)
     ascii = []
 
@@ -128,7 +227,15 @@ def main():
         default="terminal",
         required=False,
     )
-    parser.add_argument("-more", action="store_true")
+    parser.add_argument("--more", dest="more", help="grey scale", type=int, default=4)
+    parser.add_argument(
+        "--x",
+        dest="x",
+        help="your scale",
+        type=int,
+        default=0,
+        required=False,
+    )
 
     args = parser.parse_args()
 
@@ -136,13 +243,14 @@ def main():
     cols = args.cols
     output = args.out
     more = args.more
+    x = args.x
 
-    if more:
-        gscale = gscale1
+    if more < len(greyscales):
+        gscale = greyscales[more]
     else:
-        gscale = gscale2
+        print("wrong")
 
-    new_image = generate_new_image(img, cols, gscale)
+    new_image = generate_new_image(img, cols, gscale, x)
 
     if output == "terminal":
         for line in new_image:
