@@ -3,6 +3,7 @@ import argparse
 from PIL import Image
 
 # 10 levels of gray
+gscale1 = "$@%8&#*/|?-_+~<>;:,\"^`'. "
 gscale2 = "@%#*+=-:. "
 
 
@@ -18,10 +19,7 @@ def average(hist):
     return suma / division
 
 
-def generate_new_image(img, cols):
-
-    global gscale2
-
+def generate_new_image(img, cols, gscale):
     image = Image.open(img).convert("L")
     width = image.size[0]
     height = image.size[1]
@@ -45,7 +43,9 @@ def generate_new_image(img, cols):
             x2 = x * scale + scale
 
             crop = image.crop((x1, y1, x2, y2))
-            gr_scale = gscale2[int((average(crop.histogram()) * 9) / 255)]
+            gr_scale = gscale[
+                int((average(crop.histogram()) * (len(gscale) - 1)) / 255)
+            ]
             output += gr_scale
         ascii.append(output)
     return ascii
@@ -72,23 +72,27 @@ def main():
         default="terminal",
         required=False,
     )
+    parser.add_argument("-more", action="store_true")
 
     args = parser.parse_args()
 
     img = args.img
     cols = args.cols
     output = args.out
+    more = args.more
 
-    try:
-        new_image = generate_new_image(img, cols)
-    except Exception as e:
-        print(e)
+    if more:
+        gscale = gscale1
+    else:
+        gscale = gscale2
+
+    new_image = generate_new_image(img, cols, gscale)
 
     if output == "terminal":
         for line in new_image:
             print(line)
     else:
-        with open(f"{output}.txt", "w") as text_file:
+        with open(f"{output}", "w") as text_file:
             text_file.writelines("\n".join(new_image))
 
 
