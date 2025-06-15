@@ -1,10 +1,66 @@
 # ascii generator
 import argparse
 from PIL import Image
+from docx import Document
 
 # 10 levels of gray
-gscale1 = "$@%8&#*/|?-_+~<>;:,\"^`'. "
+gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
+
+gscale12 = "$@%#*0_+=-:`'. "
+
 gscale2 = "@%#*+=-:. "
+
+from docx import Document
+from docx.shared import Pt, Inches, Emu
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+from docx.enum.text import WD_LINE_SPACING
+
+
+def save_ascii_art_to_docx(ascii_lines, filename="ascii_art.docx"):
+    doc = Document()
+
+    # Define A4 size in EMUs
+    A4_WIDTH = Emu(8.27 * 914400)  # ~7,566,288 EMU
+    A4_HEIGHT = Emu(11.69 * 914400)  # ~10,473,779 EMU
+
+    for section in doc.sections:
+        # Set page size to A4
+        section.page_width = A4_WIDTH
+        section.page_height = A4_HEIGHT
+
+        # Set all margins to zero
+        section.top_margin = Inches(0)
+        section.bottom_margin = Inches(0)
+        section.left_margin = Inches(0)
+        section.right_margin = Inches(0)
+
+    for line in ascii_lines:
+        para = doc.add_paragraph()
+        run = para.add_run(line)
+
+        # Font settings
+        font = run.font
+        font.name = "Courier New"
+        font.size = Pt(5)
+
+        # Force eastAsia font override safely
+        rpr = run._element.rPr
+        if rpr is not None:
+            rFonts = rpr.find(qn("w:rFonts"))
+            if rFonts is None:
+                rFonts = OxmlElement("w:rFonts")
+                rpr.append(rFonts)
+            rFonts.set(qn("w:eastAsia"), "Courier New")
+
+        # Minimal spacing between lines
+        para_format = para.paragraph_format
+        para_format.line_spacing_rule = WD_LINE_SPACING.EXACTLY
+        para_format.line_spacing = Pt(5)
+        para_format.space_before = Pt(0)
+        para_format.space_after = Pt(0)
+
+    doc.save(filename)
 
 
 def average(hist):
@@ -91,6 +147,8 @@ def main():
     if output == "terminal":
         for line in new_image:
             print(line)
+    elif ".docx" in output:
+        save_ascii_art_to_docx(new_image, output)
     else:
         with open(f"{output}", "w") as text_file:
             text_file.writelines("\n".join(new_image))
